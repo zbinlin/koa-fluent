@@ -1,0 +1,51 @@
+{
+    "name": "koa-fluent",
+    "version": "1.0.0",
+    "description": "Fluent middleware for koa",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "jest ./src",
+        "pretest": "npm run lint",
+        "lint": "eslint './src/**/*.ts'",
+        "build": "tsc",
+        "prepublishOnly": "npm run test && npm run build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/zbinlin/koa-fluent.git"
+    },
+    "keywords": [
+        "koa",
+        "i18n",
+        "l10n",
+        "l20n",
+        "middleware",
+        "fluent"
+    ],
+    "author": "Colin Cheng <zbinlin@outlook.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/zbinlin/koa-fluent/issues"
+    },
+    "homepage": "https://github.com/zbinlin/koa-fluent#readme",
+    "devDependencies": {
+        "@types/fluent": "^0.11.0",
+        "@types/fluent-langneg": "^0.1.1",
+        "@types/jest": "^24.0.13",
+        "@types/koa": "^2.0.48",
+        "@types/node": "^12.0.4",
+        "@typescript-eslint/eslint-plugin": "^1.9.0",
+        "@typescript-eslint/parser": "^1.9.0",
+        "eslint": "^5.16.0",
+        "eslint-import-resolver-typescript": "^1.1.1",
+        "eslint-plugin-import": "^2.17.3",
+        "jest": "^24.8.0",
+        "koa": "^2.7.0",
+        "ts-jest": "^24.0.2",
+        "typescript": "~3.4.1"
+    },
+    "dependencies": {
+        "fluent": "^0.12.0",
+        "fluent-langneg": "^0.1.1"
+    }
+}
