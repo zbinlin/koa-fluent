@@ -2,12 +2,13 @@
     "name": "koa-fluent",
     "version": "1.0.0",
     "description": "Fluent middleware for koa",
-    "main": "dist/index.js",
+    "main": "./target/release/index.js",
+    "types": "./target/release/index.d.ts",
     "scripts": {
         "test": "jest ./src",
         "pretest": "npm run lint",
         "lint": "eslint './src/**/*.ts'",
-        "build": "tsc",
+        "build": "tsc --build ./tsconfig.prod.json",
         "prepublishOnly": "npm run test && npm run build"
     },
     "repository": {
@@ -29,10 +30,7 @@
     },
     "homepage": "https://github.com/zbinlin/koa-fluent#readme",
     "devDependencies": {
-        "@types/fluent": "^0.11.0",
-        "@types/fluent-langneg": "^0.1.1",
         "@types/jest": "^24.0.13",
-        "@types/koa": "^2.0.48",
         "@types/node": "^12.0.4",
         "@typescript-eslint/eslint-plugin": "^1.9.0",
         "@typescript-eslint/parser": "^1.9.0",
@@ -40,12 +38,15 @@
         "eslint-import-resolver-typescript": "^1.1.1",
         "eslint-plugin-import": "^2.17.3",
         "jest": "^24.8.0",
-        "koa": "^2.7.0",
         "ts-jest": "^24.0.2",
         "typescript": "~3.4.1"
     },
     "dependencies": {
+        "@types/fluent": "^0.11.0",
+        "@types/fluent-langneg": "^0.1.1",
+        "@types/koa": "^2.0.48",
         "fluent": "^0.12.0",
-        "fluent-langneg": "^0.1.1"
+        "fluent-langneg": "^0.1.1",
+        "koa": "^2.7.0"
     }
 }

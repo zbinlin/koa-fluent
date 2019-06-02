@@ -6,8 +6,7 @@
         "esModuleInterop": true,
         "strict": true,
         "preserveConstEnums": true,
-        "declaration": false,
-        "outDir": "./dist"
+        "outDir": "./target/debug"
     },
     "include": [
         "./src/**/*"

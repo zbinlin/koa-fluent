@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "declaration": true,
+        "outDir": "./target/release"
+    },
+    "exclude": [
+        "**/__tests__/**/*"
+    ]
+}
