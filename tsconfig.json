@@ -6,6 +6,9 @@
         "esModuleInterop": true,
         "strict": true,
         "preserveConstEnums": true,
+        "lib": [
+            "ES2015", "ES2016", "ES2017", "ES2018", "ESNext"
+        ],
         "outDir": "./target/debug"
     },
     "include": [

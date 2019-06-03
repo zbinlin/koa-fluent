@@ -1,6 +1,7 @@
 import { FluentBundle, FluentBundleContructorOptions } from "fluent";
 import { LanguageNegotiationOptions } from "fluent-langneg";
 import Koa, { ParameterizedContext } from "koa";
+import * as util from "util";
 import {
     parseLocalizationId,
     LocalizationNamespaces,
@@ -9,13 +10,22 @@ import {
     getBundleFromBundlesByLanguages,
 } from "./lib";
 
+const debuglog = util.debuglog("koa-fluent");
+
 declare module "koa" {
     interface BaseContext {
         __language?: string;
         __languages?: string[];
-        __: (id: string, args?: {}, error?: string[]) => string;
+        ftl: (id: string, args?: {}, error?: string[]) => string;
         __getLanguage: () => string | void;
         __getLanguages: () => string[];
+    }
+}
+
+// TODO adds to @types/fluent
+declare module "fluent" {
+    interface FluentBundle {
+        readonly locales: string[];
     }
 }
 
@@ -29,9 +39,9 @@ export interface ILocalizationOptions extends LanguageNegotiationOptions, Fluent
 
 const DefaultOptions: Partial<ILocalizationOptions> = {
     functionName: "ftl",
-    defaultLanguage: "zh-CN",
-    queryField: "locale",
-    cookieField: "locale",
+    defaultLanguage: "en-US",
+    queryField: "ftl_locale",
+    cookieField: "ftl_locale",
 };
 
 function createLocalization<S, CT>(target: Koa<S, CT>, options: ILocalizationOptions): void {
@@ -51,7 +61,9 @@ function createLocalization<S, CT>(target: Koa<S, CT>, options: ILocalizationOpt
 
     const l10nNamespaces: LocalizationNamespaces = {};
 
-    const dirs = (typeof (options.dirs as string)) === "string" ? new Map([[undefined, options.dirs as string]]) : options.dirs as ReadonlyMap<string, string>;
+    const dirs = (typeof (options.dirs as string)) === "string"
+        ? new Map([[undefined, options.dirs as string]])
+        : options.dirs as ReadonlyMap<string, string>;
 
     for (const [ns, dir] of dirs) {
         for (const item of getLocalesFromDir(dir, ns)) {
@@ -59,11 +71,14 @@ function createLocalization<S, CT>(target: Koa<S, CT>, options: ILocalizationOpt
             if (!l10nBundles) {
                 l10nBundles = l10nNamespaces[item.namespace] = {};
             }
-            const bundle = l10nBundles[item.locale] = new FluentBundle(item.locale, {
-                functions,
-                transform,
-                useIsolating,
-            });
+            const bundle = l10nBundles[item.locale] = new FluentBundle(
+                item.locale,
+                {
+                    functions,
+                    transform,
+                    useIsolating,
+                },
+            );
             bundle.addMessages(item.messages);
         }
     }
@@ -103,12 +118,12 @@ function createLocalization<S, CT>(target: Koa<S, CT>, options: ILocalizationOpt
         return [];
     };
 
-    context[functionName as "__"] = function __(this: Context, id: string, args?: {}, errors?: string[]): string {
+    context[functionName!] = function ftl(this: Context, id: string, args?: {}, errors?: string[]): string {
         const [ns, token] = parseLocalizationId(id);
         const bundles = getBundlesByNamespace(l10nNamespaces, ns);
 
         if (!bundles) {
-            console.debug(`Not found id(${token}) in ${ns}`);
+            debuglog(`Not found id(${token}) in ${ns}`);
             if (Array.isArray(errors)) {
                 // FIXME
                 errors.push(new Error(`Not found id(${token}) in ${ns}`) as unknown as string);
@@ -121,20 +136,25 @@ function createLocalization<S, CT>(target: Koa<S, CT>, options: ILocalizationOpt
         let bundle = getBundleFromBundlesByLanguages(bundles, [language as string]);
 
         if (!bundle) {
-            console.debug(`Does not supports language(${language})`);
-            if (Array.isArray(errors)) {
-                // FIXME
-                errors.push(new Error(`Does not supports language(${language}`) as unknown as string);
+            debuglog(`Does not supports language(${language})`);
+
+            bundle = bundles[defaultLanguage!];
+            if (!bundle) {
+                debuglog(`Cannot found default locale(${defaultLanguage})`);
+                if (Array.isArray(errors)) {
+                    // FIXME
+                    errors.push(new Error(`Does not supports language(${language}`) as unknown as string);
+                    errors.push(new Error(`Cannot found default locale(${defaultLanguage})`) as unknown as string);
+                }
+                return "";
             }
-            return "";
         }
 
-        bundle = bundles[defaultLanguage!];
-        if (!bundle) {
-            console.debug(`Cannot found default locale(${defaultLanguage})`);
+        if (!bundle.hasMessage(token)) {
+            debuglog(`Not found ${token} in bundle(language: ${bundle.locales[0]}, path:${ns})`);
             if (Array.isArray(errors)) {
                 // FIXME
-                errors.push(new Error(`Cannot found default locale(${defaultLanguage})`) as unknown as string);
+                errors.push(new Error(`Not found ${token} in bundle(language: ${bundle.locales[0]}, path:${ns})`) as unknown as string);
             }
             return "";
         }
