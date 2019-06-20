@@ -116,6 +116,8 @@ module.exports = {
                     "@typescript-eslint/no-non-null-assertion": false,
                     "@typescript-eslint/interface-name-prefix": false,
 
+                    "@typescript-eslint/array-type": ["error", "array-simple"],
+
                     /**
                      * @link https://github.com/typescript-eslint/typescript-eslint/issues/342
                      */
