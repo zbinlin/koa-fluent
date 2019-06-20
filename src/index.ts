@@ -22,13 +22,6 @@ declare module "koa" {
     }
 }
 
-// TODO adds to @types/fluent
-declare module "fluent" {
-    interface FluentBundle {
-        readonly locales: string[];
-    }
-}
-
 export interface ILocalizationOptions extends LanguageNegotiationOptions, FluentBundleContructorOptions {
     readonly dirs: string | ReadonlyMap<string, string>;
     readonly defaultLanguage?: string;
@@ -118,15 +111,14 @@ function createLocalization<S, CT>(target: Koa<S, CT>, options: ILocalizationOpt
         return [];
     };
 
-    context[functionName!] = function ftl(this: Context, id: string, args?: {}, errors?: string[]): string {
+    context[functionName!] = function ftl(this: Context, id: string, args?: {}, errors?: Array<string | Error>): string {
         const [ns, token] = parseLocalizationId(id);
         const bundles = getBundlesByNamespace(l10nNamespaces, ns);
 
         if (!bundles) {
             debuglog(`Not found id(${token}) in ${ns}`);
             if (Array.isArray(errors)) {
-                // FIXME
-                errors.push(new Error(`Not found id(${token}) in ${ns}`) as unknown as string);
+                errors.push(new Error(`Not found id(${token}) in ${ns}`));
             }
             return "";
         }
@@ -142,9 +134,8 @@ function createLocalization<S, CT>(target: Koa<S, CT>, options: ILocalizationOpt
             if (!bundle) {
                 debuglog(`Cannot found default locale(${defaultLanguage})`);
                 if (Array.isArray(errors)) {
-                    // FIXME
-                    errors.push(new Error(`Does not supports language(${language}`) as unknown as string);
-                    errors.push(new Error(`Cannot found default locale(${defaultLanguage})`) as unknown as string);
+                    errors.push(new Error(`Does not supports language(${language}`));
+                    errors.push(new Error(`Cannot found default locale(${defaultLanguage})`));
                 }
                 return "";
             }
@@ -153,8 +144,7 @@ function createLocalization<S, CT>(target: Koa<S, CT>, options: ILocalizationOpt
         if (!bundle.hasMessage(token)) {
             debuglog(`Not found ${token} in bundle(language: ${bundle.locales[0]}, path:${ns})`);
             if (Array.isArray(errors)) {
-                // FIXME
-                errors.push(new Error(`Not found ${token} in bundle(language: ${bundle.locales[0]}, path:${ns})`) as unknown as string);
+                errors.push(new Error(`Not found ${token} in bundle(language: ${bundle.locales[0]}, path:${ns})`));
             }
             return "";
         }
