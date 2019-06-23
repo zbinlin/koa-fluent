@@ -28,19 +28,19 @@ const app = new Koa();
  * └── zh-CN.ftl
  */
 fluent(app, {
-    dirs: './locales', // locales dir
-    defaultLanguage: 'en-US', // optional
-    functionName: 'ftl', // optional
-    queryField: 'ftl_locale', // optional
-    cookieField: 'ftl_locale', // optional
+    dirs: "./locales", // locales dir
+    defaultLanguage: "en-US", // optional
+    functionName: "ftl", // optional
+    queryField: "ftl_locale", // optional
+    cookieField: "ftl_locale", // optional
 });
 
 /**
  * Use ctx.ftl to format message
  */
 app.use(async (ctx, next) => {
-    ctx.body = ctx.ftl('welcome', {
-        name: 'colin,
+    ctx.body = ctx.ftl("welcome", {
+        name: "colin",
     });
 });
 ```
