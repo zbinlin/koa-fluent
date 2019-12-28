@@ -111,7 +111,7 @@ function createLocalization<S, CT>(target: Koa<S, CT>, options: ILocalizationOpt
         return [];
     };
 
-    context[functionName!] = function ftl(this: Context, id: string, args?: {}, errors?: Array<string | Error>): string {
+    context[functionName as "ftl"] = function ftl(this: Context, id: string, args?: {}, errors?: Array<string | Error>): string {
         const [ns, token] = parseLocalizationId(id);
         const bundles = getBundlesByNamespace(l10nNamespaces, ns);
 
@@ -141,15 +141,15 @@ function createLocalization<S, CT>(target: Koa<S, CT>, options: ILocalizationOpt
             }
         }
 
-        if (!bundle.hasMessage(token)) {
+        const message = bundle.getMessage(token);
+
+        if (message == null) {
             debuglog(`Not found ${token} in bundle(language: ${bundle.locales[0]}, path:${ns})`);
             if (Array.isArray(errors)) {
                 errors.push(new Error(`Not found ${token} in bundle(language: ${bundle.locales[0]}, path:${ns})`));
             }
             return "";
         }
-
-        const message = bundle.getMessage(token);
 
         return bundle.format(message, args, errors);
     };
