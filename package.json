@@ -30,23 +30,23 @@
     },
     "homepage": "https://github.com/zbinlin/koa-fluent#readme",
     "devDependencies": {
-        "@types/jest": "^24.0.15",
-        "@types/node": ">= 10.0.0",
-        "@typescript-eslint/eslint-plugin": "^1.10.2",
-        "@typescript-eslint/parser": "^1.10.2",
-        "eslint": ">= 5.16.0",
-        "eslint-import-resolver-typescript": ">= 1.1.1",
-        "eslint-plugin-import": ">= 2.17.3",
-        "jest": "^24.8.0",
-        "ts-jest": "^24.0.2",
+        "@types/jest": "^24.0.25",
+        "@types/node": "^13.1.1",
+        "@typescript-eslint/eslint-plugin": "^2.13.0",
+        "@typescript-eslint/parser": "^2.13.0",
+        "eslint": "^6.8.0",
+        "eslint-import-resolver-typescript": "^2.0.0",
+        "eslint-plugin-import": "^2.19.1",
+        "jest": "^24.9.0",
+        "ts-jest": "^24.2.0",
         "typescript": "~3.4.1"
     },
     "dependencies": {
-        "@types/fluent": "^0.11.2",
+        "@types/fluent": "^0.11.3",
         "@types/fluent-langneg": "^0.1.1",
-        "@types/koa": "^2.0.48",
+        "@types/koa": "^2.11.0",
         "fluent": "^0.12.0",
         "fluent-langneg": "^0.1.1",
-        "koa": "^2.7.0"
+        "koa": "^2.11.0"
     }
 }
